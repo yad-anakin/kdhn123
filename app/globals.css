@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --accent: 221 83% 53%;
+  --accent-foreground: 0 0% 100%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --accent: 221 83% 53%;
+  --accent-foreground: 0 0% 100%;
+}
+
+html, body, :root {
+  height: 100%;
+}
+
+html {
+  overflow: hidden; /* also hide page scrollbar in Chrome */
+  overscroll-behavior: none;
+}
+
+body {
+  @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+  overflow: hidden; /* ensure only chat section scrolls */
+}
+
+/* Hide page-level scrollbars (so no white track on the right) */
+html, body { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { background: transparent; }
+
+.container-page {
+  @apply mx-auto max-w-7xl px-3 sm:px-6 lg:px-8;
+}
+
+.btn { @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition; }
+
+.btn-accent { @apply bg-accent text-accent-foreground border-transparent hover:opacity-90; }
+
+.input { @apply w-full rounded-md bg-white dark:bg-gray-900 px-3 py-2 outline-none focus:ring-2 focus:ring-accent; }
+
+.card { @apply rounded-lg bg-white dark:bg-gray-900 shadow-sm; }
+
+/* Minimal scrollbar for the chat composer */
+.composer-textarea {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0,0,0,0.25) transparent;
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.dark .composer-textarea {
+  scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+/* WebKit-based browsers */
+textarea.composer-textarea::-webkit-scrollbar {
+  width: 4px;   /* vertical */
+  height: 0;    /* hide horizontal bar */
+}
+.composer-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+.composer-textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.25);
+  border-radius: 9999px;
+}
+.dark .composer-textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.25);
+}
+textarea.composer-textarea::-webkit-scrollbar-button { /* hide top/bottom arrows */
+  width: 0;
+  height: 0;
+  display: none;
+}
+textarea.composer-textarea::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Minimal scrollbar for messages area using accent color */
+.messages-scroll {
+  scrollbar-width: thin;
+  /* Firefox: thumb color then track color */
+  scrollbar-color: hsla(var(--accent), 0.25) transparent;
+  background: transparent;
+}
+.dark .messages-scroll {
+  scrollbar-color: hsla(var(--accent), 0.25) transparent;
+  color-scheme: dark; /* hint Chrome to render dark UI */
+}
+.messages-scroll::-webkit-scrollbar {
+  width: 1px; /* ultra-ultra thin */
+  height: 0;  /* hide horizontal */
+  background: transparent;
+}
+.messages-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+  border: none;
+}
+.messages-scroll::-webkit-scrollbar-track-piece { background: transparent !important; }
+.messages-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent; /* invisible until hover */
+  border-radius: 9999px;
+  border: 1px solid transparent; /* avoid white edge on some themes */
+  background-clip: padding-box;
+}
+.messages-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: hsla(var(--accent), 0.30);
+}
+.messages-scroll::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+.messages-scroll::-webkit-scrollbar-button:start:decrement,
+.messages-scroll::-webkit-scrollbar-button:end:increment,
+.messages-scroll::-webkit-scrollbar-button:single-button,
+.messages-scroll::-webkit-scrollbar-button:vertical:increment,
+.messages-scroll::-webkit-scrollbar-button:vertical:decrement {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.messages-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox: ensure transparent track (second color) */
+.messages-scroll { scrollbar-color: hsla(var(--accent), 0.30) rgba(0,0,0,0); }
+.dark .messages-scroll { scrollbar-color: hsla(var(--accent), 0.30) rgba(0,0,0,0); }
+
+/* Advanced Markdown styles for chat bubbles */
+@layer components {
+  .chat-md {
+    @apply prose prose-sm max-w-none dark:prose-invert;
+  }
+  /* Remove extra outer margins inside bubble */
+  .chat-md > :where(:first-child){ @apply mt-0; }
+  .chat-md > :where(:last-child){ @apply mb-0; }
+  /* Slightly more comfortable spacing */
+  .chat-md :where(p){ @apply my-1.5 leading-6; }
+  .chat-md :where(h1){ @apply text-xl font-bold mt-2 mb-2; }
+  .chat-md :where(h2){ @apply text-lg font-semibold mt-2 mb-2; }
+  .chat-md :where(h3){ @apply text-base font-semibold mt-2 mb-2; }
+  /* Tighter lists */
+  .chat-md :where(ul){ @apply list-disc pl-5 my-1.5; }
+  .chat-md :where(ol){ @apply list-decimal pl-5 my-1.5; }
+  .chat-md :where(li){ @apply my-0 leading-6; }
+  /* Remove paragraph spacing within list items */
+  .chat-md :where(ul li p, ol li p){ @apply my-0; }
+  /* Reduce gaps between consecutive list items containing blocks */
+  .chat-md :where(li > *:not(:last-child)){ @apply mb-1.5; }
+  .chat-md :where(blockquote){ @apply border-l-4 border-gray-300 dark:border-gray-700 pl-3 italic my-1; }
+  .chat-md :where(table){ @apply w-full text-left border-collapse my-3; }
+  .chat-md :where(th){ @apply border-b border-gray-300 dark:border-gray-700 font-semibold px-2 py-1; }
+  .chat-md :where(td){ @apply border-b border-gray-200 dark:border-gray-800 px-2 py-1 align-top; }
+  .chat-md :where(hr){ @apply my-2 border-gray-300 dark:border-gray-700; }
+}
+
+/* Minimal highlight.js baseline (we override bg in component) */
+.hljs { @apply text-gray-100; }
+.dark .hljs { @apply text-gray-100; }
