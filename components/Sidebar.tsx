@@ -26,7 +26,10 @@ export default function Sidebar({
 
   const content = (
     <aside className="h-full w-full md:w-fit flex flex-col bg-white dark:bg-gray-950">
-      <div className="px-3 h-16 flex items-center gap-2">
+      <div
+        className="px-3 min-h-16 flex items-center gap-2"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
         <span className="font-semibold">KDHN</span>
         <button
           className="btn md:hidden ml-auto !px-2 !py-2 transition transform hover:scale-110 active:scale-95 hover:rotate-3 text-[hsl(var(--accent))]"
