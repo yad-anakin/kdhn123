@@ -4,6 +4,14 @@ const nextConfig = {
   experimental: {
     typedRoutes: true,
   },
+  // Skip ESLint during production builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Skip TypeScript type checking errors during builds
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

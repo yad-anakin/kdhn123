@@ -4,7 +4,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { LanguageProvider } from '@/components/LanguageProvider'
 
 export const metadata: Metadata = {
-  title: 'AI Chat Dashboard',
+  title: 'KDHN AI',
   description: 'Chat panel with collapsible menu and theming',
 }
 
