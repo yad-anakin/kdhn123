@@ -25,7 +25,7 @@ export default function Sidebar({
   }
 
   const content = (
-    <aside className="h-full w-full md:w-fit flex flex-col bg-white dark:bg-gray-950">
+    <aside className="h-dvh w-full md:w-fit flex flex-col bg-white dark:bg-gray-950">
       <div
         className="px-3 min-h-16 flex items-center gap-2"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
@@ -137,7 +137,6 @@ export default function Sidebar({
       </nav>
 
       {/* Footer links on one row */}
-      
       <div className="mt-auto p-3 border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between gap-3">
           {/* Website */}
@@ -210,6 +209,7 @@ export default function Sidebar({
           ? 'translate-x-0 md:max-w-[280px]'
           : '-translate-x-full md:max-w-0'
       )}
+      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {content}
     </div>

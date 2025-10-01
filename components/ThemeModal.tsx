@@ -11,7 +11,7 @@ const ACCENTS: { key: AccentPreset; labelKey: string; swatch: string }[] = [
   { key: 'rose', labelKey: 'accent.rose', swatch: 'bg-rose-500' },
   { key: 'orange', labelKey: 'accent.orange', swatch: 'bg-orange-500' },
 ]
- 
+
 export default function ThemeModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { setMode, setAccent } = useTheme()
   const { t } = useLanguage()
@@ -36,13 +36,14 @@ export default function ThemeModal({ open, onClose }: { open: boolean; onClose: 
         onClick={onClose}
       />
 
-      {/* Modal */}
+      {/* Modal container (centered, scrollable, safe-area padded) */}
       <div
-        className={`absolute left-1/2 top-1/2 w-[min(92vw,640px)] -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${
-          open ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        className={`absolute inset-0 flex items-center justify-center p-4 md:p-6 overflow-y-auto transition-opacity duration-200 ${
+          open ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="card p-4">
+        <div className="card p-4 w-[min(92vw,640px)] max-h-[90dvh] overflow-auto">
           <div className="flex items-center">
             <h2 className="text-base font-semibold">{t('theme.choose_title')}</h2>
             <button className="btn ml-auto" onClick={onClose}>{t('common.close')}</button>

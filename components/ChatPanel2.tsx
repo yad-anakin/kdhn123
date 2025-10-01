@@ -106,9 +106,9 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
   return (
     <div className="flex flex-col h-full relative">
       {/* Messages */}
-      <div className="messages-scroll relative flex-1 overflow-y-auto space-y-4 px-3 md:px-4 pt-4 pb-24">
+      <div className="messages-scroll relative flex-1 overflow-y-auto space-y-4 px-3 md:px-4 pt-20 md:pt-24 pb-24">
         {messages.length === 0 && !loading ? (
-          <div className="absolute left-0 right-0 top-0 bottom-24 flex items-center justify-center px-6">
+          <div className="absolute left-0 right-0 top-16 md:top-20 bottom-24 flex items-center justify-center px-6">
             <div className="text-center max-w-2xl">
               <div className="mx-auto mb-5 flex items-center justify-center">
                 <Image
@@ -128,20 +128,27 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
         ) : (
         messages.map((m, i) => {
           const isRtl = /[\u0600-\u06FF]/.test(m.content)
+          const isUser = m.role === 'user'
           return (
-          <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
+          <div key={i} className={isUser ? 'text-right' : 'text-left'}>
             <div
               className={`inline-block max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-                m.role === 'user'
-                  ? `bg-[hsl(var(--accent)/0.9)] ${mode === 'dark' && accent === 'normal' ? 'text-black' : 'text-accent-foreground'}`
+                isUser
+                  ? `bg-[hsl(var(--accent)/0.9)] ${
+                      mode === 'dark' && accent === 'normal'
+                        ? 'text-black [&_*]:text-black'
+                        : 'text-white [&_*]:text-white'
+                    }`
                   : 'bg-gray-100 dark:bg-gray-800'
               }`}
               style={m.role === 'user' && mode === 'dark' && accent === 'normal' ? { color: '#000' } : undefined}
             >
               {(() => {
-                const userWhiteBubble = m.role === 'user' && mode === 'dark' && accent === 'normal'
-                const proseClass = userWhiteBubble
-                  ? 'chat-md max-w-none text-black [&_*]:text-black space-y-2'
+                const userWhiteBubble = isUser && mode === 'dark' && accent === 'normal'
+                const proseClass = isUser
+                  ? (userWhiteBubble
+                      ? 'chat-md max-w-none text-black [&_*]:text-black space-y-2'
+                      : 'chat-md max-w-none text-white [&_*]:text-white space-y-2')
                   : 'chat-md prose prose-sm max-w-none dark:prose-invert'
                 return (
                   <div dir={isRtl ? 'rtl' : 'ltr'} className={isRtl ? 'text-right' : 'text-left'}>
@@ -151,7 +158,10 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
                       rehypePlugins={[rehypeRaw, rehypeHighlight]}
                       components={{
                       a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-                        <a {...props} className="underline decoration-dashed hover:decoration-solid" />
+                        <a
+                          {...props}
+                          className={`${isUser ? 'text-inherit' : ''} underline decoration-dashed hover:decoration-solid`}
+                        />
                       ),
                       code: ({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: React.ReactNode }) => {
                         const isInline = inline || !/\n/.test(String(children))
@@ -190,7 +200,7 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
                 alt={t('img.loading')}
                 width={24}
                 height={24}
-                className="h-6 w-6 animate-spin select-none"
+                className="h-6 w-6 animate-spin select-none invert dark:invert-0"
                 priority
               />
             </div>
@@ -198,6 +208,7 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
         )}
         <div ref={endRef} />
       </div>
+
       {/* Floating composer (scoped to chat section) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-4 mx-auto w-[calc(100%-1rem)] md:w-[calc(100%-2rem)] max-w-4xl">
         <div className="relative pointer-events-auto rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-sm overflow-hidden">
