@@ -25,10 +25,9 @@ export default function Sidebar({
   }
 
   const content = (
-    <aside className="h-dvh w-full md:w-fit flex flex-col bg-white dark:bg-gray-950">
+    <aside className="h-full w-full md:w-fit flex flex-col bg-white dark:bg-gray-950 overflow-y-auto overscroll-contain">
       <div
-        className="px-3 min-h-16 flex items-center gap-2"
-        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+        className="sticky top-0 z-10 px-3 min-h-16 flex items-center gap-2 bg-white dark:bg-gray-950"
       >
         <span className="font-semibold">KDHN</span>
         <button
@@ -199,7 +198,7 @@ export default function Sidebar({
     <div
       className={clsx(
         // Base: mobile drawer, desktop inline with width animation
-        'z-40 md:z-auto fixed inset-y-0 left-0 w-full md:static md:shrink-0',
+        'z-40 md:z-auto fixed left-0 w-full md:static md:shrink-0',
         // Mobile slide animation
         'transform transition-transform duration-300 ease-out md:transform-none',
         // Desktop width animation
@@ -209,7 +208,10 @@ export default function Sidebar({
           ? 'translate-x-0 md:max-w-[280px]'
           : '-translate-x-full md:max-w-0'
       )}
-      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+      style={{
+        top: 'env(safe-area-inset-top)',
+        bottom: 'env(safe-area-inset-bottom)'
+      }}
     >
       {content}
     </div>

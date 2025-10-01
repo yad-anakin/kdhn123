@@ -2255,6 +2255,9 @@ video {
 .overflow-x-hidden {
   overflow-x: hidden;
 }
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
 .rounded {
   border-radius: 0.25rem;
 }
