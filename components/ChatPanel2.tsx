@@ -198,7 +198,6 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
         )}
         <div ref={endRef} />
       </div>
-
       {/* Floating composer (scoped to chat section) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-4 mx-auto w-[calc(100%-1rem)] md:w-[calc(100%-2rem)] max-w-4xl">
         <div className="relative pointer-events-auto rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-sm overflow-hidden">
