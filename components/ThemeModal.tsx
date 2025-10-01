@@ -11,7 +11,7 @@ const ACCENTS: { key: AccentPreset; labelKey: string; swatch: string }[] = [
   { key: 'rose', labelKey: 'accent.rose', swatch: 'bg-rose-500' },
   { key: 'orange', labelKey: 'accent.orange', swatch: 'bg-orange-500' },
 ]
-
+ 
 export default function ThemeModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { setMode, setAccent } = useTheme()
   const { t } = useLanguage()
