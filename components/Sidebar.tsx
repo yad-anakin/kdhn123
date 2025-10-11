@@ -52,7 +52,9 @@ export default function Sidebar({
 
   const content = (
     <aside className={clsx(
-      'h-full w-full md:w-full flex flex-col bg-white dark:bg-gray-950 overscroll-contain sidebar-scroll',
+      'w-full md:w-full flex flex-col bg-white dark:bg-gray-950 overscroll-contain sidebar-scroll',
+      // Lock height to dynamic viewport to ensure proper scrolling on Safari/iOS
+      'h-[100dvh] md:h-[100dvh]',
       'md:border-r md:border-gray-200 dark:md:border-gray-800',
       collapsed ? 'md:overflow-y-hidden' : 'overflow-y-auto'
     )}>

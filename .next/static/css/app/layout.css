@@ -2084,6 +2084,9 @@ video {
 .h-7 {
   height: 1.75rem;
 }
+.h-\[100dvh\] {
+  height: 100dvh;
+}
 .max-h-40 {
   max-height: 10rem;
 }
@@ -3119,6 +3122,10 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
 
   .md\:h-9 {
     height: 2.25rem;
+  }
+
+  .md\:h-\[100dvh\] {
+    height: 100dvh;
   }
 
   .md\:w-\[calc\(100\%-2rem\)\] {
