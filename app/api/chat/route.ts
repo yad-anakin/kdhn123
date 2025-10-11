@@ -1,19 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { agent1Prompt } from '@/prompts/agent1'
 import { agent2Prompt } from '@/prompts/agent2'
+import { drugCalculatorPrompt } from '@/prompts/drugCalculator'
+import { studyAssistantPrompt } from '@/prompts/studyAssistant'
+import { pediatricDrugCalculatorPrompt } from '@/prompts/pediatricDrugCalculator'
+import { neonatalDrugCalculatorPrompt } from '@/prompts/neonatalDrugCalculator'
 
 export const runtime = 'nodejs'
 
 type InMsg = { role: 'user' | 'assistant'; content: string }
 type PostBody = {
   messages: InMsg[]
-  agent?: 'agent1' | 'agent2'
+  agent?: 'agent1' | 'agent2' | 'drug' | 'study' | 'pediatric' | 'neonatal'
   customPrompt?: string
 }
 
-const AGENT_PROMPTS: Record<'agent1' | 'agent2', string> = {
+const AGENT_PROMPTS: Record<'agent1' | 'agent2' | 'drug' | 'study' | 'pediatric' | 'neonatal', string> = {
   agent1: agent1Prompt,
   agent2: agent2Prompt,
+  drug: drugCalculatorPrompt,
+  study: studyAssistantPrompt,
+  pediatric: pediatricDrugCalculatorPrompt,
+  neonatal: neonatalDrugCalculatorPrompt,
 }
 
 export async function POST(req: NextRequest) {

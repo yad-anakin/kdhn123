@@ -14,7 +14,7 @@ export type ChatMessage = {
   content: string
 }
 
-export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | 'agent2'; clearSignal?: number }) {
+export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | 'agent2' | 'drug' | 'study' | 'pediatric' | 'neonatal'; clearSignal?: number }) {
   const { mode, accent } = useTheme()
   const { t } = useLanguage()
   // Normalize content to reduce extra blank lines produced by the model
@@ -103,6 +103,16 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
     }
   }
 
+  // Pick agent-specific welcome hint
+  const hintKey = (
+    agent === 'agent1' ? 'welcome.hint.agent1'
+    : agent === 'agent2' ? 'welcome.hint.agent2'
+    : agent === 'drug' ? 'welcome.hint.drug'
+    : agent === 'pediatric' ? 'welcome.hint.pediatric'
+    : agent === 'neonatal' ? 'welcome.hint.neonatal'
+    : 'welcome.hint.study'
+  ) as any
+
   return (
     <div className="flex flex-col h-full relative">
       {/* Messages */}
@@ -122,7 +132,7 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
               </div>
               <h1 className="text-3xl md:text-4xl font-semibold">{t('welcome.title')}</h1>
               <p className="mt-2 text-base md:text-lg text-gray-600 dark:text-gray-300">{t('welcome.subtitle')}</p>
-              <p className="mt-5 text-sm text-gray-500 dark:text-gray-400">{t('welcome.hint')}</p>
+              <p className="mt-5 text-sm text-gray-500 dark:text-gray-400">{t(hintKey)}</p>
             </div>
           </div>
         ) : (

@@ -16,7 +16,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        />
+        {/* Font Awesome (CDN) for sidebar icons */}
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />
+        {/* App-like behavior on mobile */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* Prevent light-mode flash: set dark class and --accent before hydration */}
         <script
           dangerouslySetInnerHTML={{

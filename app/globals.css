@@ -81,6 +81,36 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
   background: transparent;
 }
 
+/* Ultra-thin scrollbar for the sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0,0,0,0.28) transparent;
+}
+.dark .sidebar-scroll {
+  scrollbar-color: rgba(255,255,255,0.22) transparent;
+  color-scheme: dark;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 1px; /* ultra-ultra-thin */
+  height: 0;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.22);
+  border-radius: 9999px;
+}
+.dark .sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.18);
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.30);
+}
+.dark .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.26);
+}
+
 /* Minimal scrollbar for messages area using accent color */
 .messages-scroll {
   scrollbar-width: thin;

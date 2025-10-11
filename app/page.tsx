@@ -1,16 +1,22 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Sidebar from '@/components/Sidebar'
 import ChatPanel from '@/components/ChatPanel2'
 import ThemeModal from '@/components/ThemeModal'
+import LanguageModal from '@/components/LanguageModal'
 import Image from 'next/image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAsterisk } from '@fortawesome/free-solid-svg-icons'
 
 export default function Page() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState<'general' | 'fast'>('general')
+  const [languageOpen, setLanguageOpen] = useState(false)
+  const [activeAgent, setActiveAgent] = useState<'agent1' | 'agent2' | 'drug' | 'study' | 'pediatric' | 'neonatal'>('agent1')
   const [clearSignal, setClearSignal] = useState(0)
+  const [brandOpen, setBrandOpen] = useState(false)
+  const brandRef = useRef<HTMLDivElement | null>(null)
 
   // Close on Esc
   useEffect(() => {
@@ -18,11 +24,24 @@ export default function Page() {
       if (e.key === 'Escape') {
         setSidebarOpen(false)
         setThemeOpen(false)
+        setBrandOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // Close brand dropdown on outside click
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!brandOpen) return
+      if (brandRef.current && !brandRef.current.contains(e.target as Node)) {
+        setBrandOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onDocClick)
+    return () => document.removeEventListener('mousedown', onDocClick)
+  }, [brandOpen])
 
   return (
     <div className="h-screen w-full flex">
@@ -30,8 +49,9 @@ export default function Page() {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onOpenTheme={() => setThemeOpen(true)}
-        active={activeTab}
-        onChangeActive={setActiveTab}
+        onOpenLanguage={() => setLanguageOpen(true)}
+        active={activeAgent}
+        onChangeActive={setActiveAgent}
       />
 
       <div className="flex flex-col min-w-0 flex-1">
@@ -84,22 +104,45 @@ export default function Page() {
               </svg>
             </button>
             <div className="ml-auto" />
-            <div className="flex items-center">
-              <Image
-                src="/kdhnb.png"
-                alt="Logo"
-                width={260}
-                height={88}
-                priority
-                className="h-10 md:h-9 w-auto object-contain select-none invert dark:invert-0"
-              />
+            {/* Header brand with dropdown */}
+            <div ref={brandRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setBrandOpen((v) => !v)}
+                className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+                title="Kurdistan Digital Health Network"
+              >
+                <Image
+                  src="/kdhnb.png"
+                  alt="KDHN"
+                  width={260}
+                  height={88}
+                  priority
+                  className="h-10 md:h-9 w-auto object-contain select-none invert dark:invert-0"
+                />
+                <FontAwesomeIcon icon={faAsterisk} className="text-[hsl(var(--accent))] text-[11px]" />
+                <span className="text-sm md:text-base font-semibold text-[hsl(var(--accent))] opacity-90 -translate-y-[2px] md:-translate-y-[3px] inline-block">AI</span>
+              </button>
+              {brandOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg p-1">
+                  <a
+                    href="https://www.kdhn.krd/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition text-sm"
+                  >
+                    <Image src="/kdhn.png" alt="Website" width={16} height={16} className="h-4 w-4 object-contain invert dark:invert-0" />
+                    <span>Website</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </header>
 
         <main className="flex-1 min-h-0">
           <div className="h-full">
-            <ChatPanel agent={activeTab === 'general' ? 'agent1' : 'agent2'} clearSignal={clearSignal} />
+            <ChatPanel agent={activeAgent} clearSignal={clearSignal} />
           </div>
         </main>
       </div>
@@ -115,6 +158,8 @@ export default function Page() {
 
       {/* Theme modal */}
       <ThemeModal open={themeOpen} onClose={() => setThemeOpen(false)} />
+      {/* Language modal */}
+      <LanguageModal open={languageOpen} onClose={() => setLanguageOpen(false)} />
     </div>
   )
 }

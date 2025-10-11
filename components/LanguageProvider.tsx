@@ -9,6 +9,53 @@ export type LangCode = 'en' | 'ar' | 'ckb'
 type I18nDict = Record<string, Record<LangCode, string>>
 
 const translations: I18nDict = {
+  // Sidebar groups
+  'sidebar.group.medical': {
+    en: 'Medical Info',
+    ar: 'المعلومات الطبية',
+    ckb: 'زانیاری پزیشکی',
+  },
+  'sidebar.group.calc': {
+    en: 'Calculation',
+    ar: 'الحسابات',
+    ckb: 'ژمێریار',
+  },
+  'sidebar.group.study': {
+    en: 'Study',
+    ar: 'الدراسة',
+    ckb: 'خوێندن',
+  },
+  // Sidebar agents
+  'sidebar.agent.detailed': {
+    en: 'Detailed Response',
+    ar: 'إجابة مفصلة',
+    ckb: 'وەڵامی ورد',
+  },
+  'sidebar.agent.fast': {
+    en: 'Fast Response',
+    ar: 'إجابة سريعة',
+    ckb: 'وەڵامی خێرا',
+  },
+  'sidebar.agent.drug': {
+    en: 'Drug Calculator',
+    ar: 'حاسبة الأدوية',
+    ckb: 'ژمێریاری دەرمان',
+  },
+  'sidebar.agent.pediatric': {
+    en: 'Pediatric Drug Calculator',
+    ar: 'حاسبة أدوية الأطفال',
+    ckb: 'دەرمانی منداڵان',
+  },
+  'sidebar.agent.neonatal': {
+    en: 'Neonatal Drug Calculator',
+    ar: 'حاسبة أدوية حديثي الولادة',
+    ckb: 'منداڵی تازە لەدایکبوو',
+  },
+  'sidebar.agent.study': {
+    en: 'Study Assistant',
+    ar: 'مساعد الدراسة',
+    ckb: 'یارمەتیدەری خوێندن',
+  },
   'sidebar.general': {
     en: 'General Medical Info',
     ar: 'معلومات طبية عامة',
@@ -53,6 +100,37 @@ const translations: I18nDict = {
     en: 'Start by asking a question about symptoms, medications, or general health.',
     ar: '.ابدأ بطرح سؤال حول الأعراض أو الأدوية أو الصحة العامة',
     ckb: '.دەست بکە بە پرسیارکردن دەربارەی نەخۆشی، دەرمان یان تەندروستی گشتی',
+  },
+  // Agent-specific welcome hints
+  'welcome.hint.agent1': {
+    en: 'Ask detailed medical questions about symptoms, conditions, and treatments.',
+    ar: '.اطرح أسئلة طبية مفصلة عن الأعراض والحالات والعلاجات',
+    ckb: '.پرسیاری ورد بکە دەربارەی نیشانەکان، دۆخی پزیشکیت و چارەسەرەکانی',
+  },
+  'welcome.hint.agent2': {
+    en: 'Ask quick medical questions for concise, to‑the‑point answers.',
+    ar: '.اطرح أسئلة طبية سريعة للحصول على إجابات مختصرة ومباشرة',
+    ckb: '.پرسیاری خێرا بکە بۆ وەڵامی کورت و پوخت',
+  },
+  'welcome.hint.drug': {
+    en: 'Provide patient info (age, weight, renal function) to calculate safe drug doses.',
+    ar: '.قدّم معلومات المريض (العمر، الوزن، وظائف الكلى) لحساب جرعات آمنة',
+    ckb: '.زانیاری بدە لەسەر نەخۆشەکە لەبارەی (تەمەن، کێش، کارکردنی گورچیلەکانی) بۆ ڕێکخستنی دۆزی دەرمان',
+  },
+  'welcome.hint.pediatric': {
+    en: 'Enter child age, weight, and indication to compute pediatric dosing.',
+    ar: '.أدخل عمر الطفل ووزنه والدلالة العلاجية لحساب جرعات الأطفال',
+    ckb: '.تەمەنی منداڵەکە، کێش و ئیشی دەرمانەکە بنووسە بۆ ئەژمێرکردنی دۆزەکە',
+  },
+  'welcome.hint.neonatal': {
+    en: 'Provide GA, postnatal age, and weight to calculate neonatal dosing.',
+    ar: '.قدّم عمر الحمل، العمر بعد الولادة، والوزن لحساب جرعات حديثي الولادة',
+    ckb: '.ماوەی جێستەیشنەڵ، تەمەنی دوای لەدایکبوون، کێش بنووسە بۆ ئەژمێرکردنی دۆزەکە',
+  },
+  'welcome.hint.study': {
+    en: 'Ask to learn medical topics with summaries, mnemonics, and practice questions.',
+    ar: '.اطلب تعلّم مواضيع طبية مع ملخصات ووسائل حفظ وأسئلة تدريبية',
+    ckb: '.پرسیار بکە بۆ فێربوونی بابەتە پزیشکییەکان، کورتکردنەوەیان و یارمەتیدان لە بیرخستنەوەیان ',
   },
   // Theme modal
   'theme.choose_title': {
