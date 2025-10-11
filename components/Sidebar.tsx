@@ -53,6 +53,8 @@ export default function Sidebar({
   const content = (
     <aside className={clsx(
       'h-full w-full md:w-full flex flex-col bg-white dark:bg-gray-950 overscroll-contain sidebar-scroll',
+      // Add top padding on desktop so sidebar header isn't hidden under app header
+      'md:pt-16',
       'md:border-r md:border-gray-200 dark:md:border-gray-800',
       collapsed ? 'md:overflow-y-hidden' : 'overflow-y-auto'
     )}>

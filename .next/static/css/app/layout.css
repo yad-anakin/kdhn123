@@ -3184,6 +3184,10 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
     padding-top: 6rem;
   }
 
+  .md\:pt-16 {
+    padding-top: 4rem;
+  }
+
   .md\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
