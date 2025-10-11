@@ -1976,6 +1976,9 @@ video {
 .z-50 {
   z-index: 50;
 }
+.z-20 {
+  z-index: 20;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -3086,6 +3089,10 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
 
   .md\:z-auto {
     z-index: auto;
+  }
+
+  .md\:z-20 {
+    z-index: 20;
   }
 
   .md\:flex {

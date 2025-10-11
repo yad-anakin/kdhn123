@@ -53,14 +53,12 @@ export default function Sidebar({
   const content = (
     <aside className={clsx(
       'h-full w-full md:w-full flex flex-col bg-white dark:bg-gray-950 overscroll-contain sidebar-scroll',
-      // Add top padding on desktop so sidebar header isn't hidden under app header
-      'md:pt-16',
       'md:border-r md:border-gray-200 dark:md:border-gray-800',
       collapsed ? 'md:overflow-y-hidden' : 'overflow-y-auto'
     )}>
       <div
         className={clsx(
-          'sticky top-0 z-10 min-h-16 flex items-center bg-white dark:bg-gray-950',
+          'sticky top-0 z-20 min-h-16 flex items-center bg-white dark:bg-gray-950',
           collapsed ? 'justify-center px-0' : 'pr-3 pl-5 gap-2'
         )}
       >
@@ -362,7 +360,7 @@ export default function Sidebar({
     <div
       className={clsx(
         // Base: mobile drawer, desktop inline with width animation
-        'z-40 md:z-auto fixed left-0 w-full md:static md:shrink-0',
+        'z-40 md:z-20 fixed left-0 w-full md:static md:shrink-0',
         // Mobile slide animation
         'transform transition-transform duration-300 ease-out',
         // Desktop width animation
