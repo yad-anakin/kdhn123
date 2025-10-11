@@ -117,6 +117,10 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
   /* Firefox: thumb color then track color */
   scrollbar-color: hsla(var(--accent), 0.25) transparent;
   background: transparent;
+  /* Allow vertical touch/wheel gestures inside this container */
+  touch-action: pan-y;
+  /* Momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 .dark .messages-scroll {
   scrollbar-color: hsla(var(--accent), 0.25) transparent;

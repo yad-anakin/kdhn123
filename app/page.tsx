@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar'
 import ChatPanel from '@/components/ChatPanel2'
 import ThemeModal from '@/components/ThemeModal'
 import LanguageModal from '@/components/LanguageModal'
+import AgentsModal from '@/components/AgentsModal'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAsterisk } from '@fortawesome/free-solid-svg-icons'
@@ -16,6 +17,7 @@ export default function Page() {
   const [activeAgent, setActiveAgent] = useState<'agent1' | 'agent2' | 'drug' | 'study' | 'pediatric' | 'neonatal'>('agent1')
   const [clearSignal, setClearSignal] = useState(0)
   const [brandOpen, setBrandOpen] = useState(false)
+  const [agentsGroup, setAgentsGroup] = useState<null | 'medical' | 'calc' | 'study'>(null)
   const brandRef = useRef<HTMLDivElement | null>(null)
 
   // Close on Esc
@@ -44,17 +46,18 @@ export default function Page() {
   }, [brandOpen])
 
   return (
-    <div className="w-full flex min-h-[100dvh]">
+    <div className="w-full flex h-[100dvh]">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onOpenTheme={() => setThemeOpen(true)}
         onOpenLanguage={() => setLanguageOpen(true)}
+        onOpenAgents={(g: 'medical' | 'calc' | 'study') => setAgentsGroup(g)}
         active={activeAgent}
         onChangeActive={setActiveAgent}
       />
 
-      <div className="flex flex-col min-w-0 flex-1">
+      <div className="flex flex-col min-w-0 flex-1 min-h-0">
         <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-950/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-gray-950/60">
           <div className="container-page flex items-center gap-2 py-3">
             <button
@@ -109,7 +112,7 @@ export default function Page() {
               <button
                 type="button"
                 onClick={() => setBrandOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+                className="group flex items-center gap-2 rounded-md px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-900 transition"
                 title="Kurdistan Digital Health Network"
               >
                 <Image
@@ -120,7 +123,7 @@ export default function Page() {
                   priority
                   className="h-10 md:h-9 w-auto object-contain select-none invert dark:invert-0"
                 />
-                <FontAwesomeIcon icon={faAsterisk} className="text-[hsl(var(--accent))] text-[11px]" />
+                <FontAwesomeIcon icon={faAsterisk} className="text-[hsl(var(--accent))] text-[11px] group-hover:animate-[spin_2s_linear_infinite] active:animate-[spin_1.2s_linear_infinite]" />
                 <span className="text-sm md:text-base font-semibold text-[hsl(var(--accent))] opacity-90 -translate-y-[2px] md:-translate-y-[3px] inline-block">AI</span>
               </button>
               {brandOpen && (
@@ -140,8 +143,8 @@ export default function Page() {
           </div>
         </header>
 
-        <main className="flex-1 min-h-0">
-          <div className="h-full">
+        <main className="flex-1 min-h-0 overflow-hidden h-full">
+          <div className="h-full min-h-0 flex">
             <ChatPanel agent={activeAgent} clearSignal={clearSignal} />
           </div>
         </main>
@@ -160,6 +163,15 @@ export default function Page() {
       <ThemeModal open={themeOpen} onClose={() => setThemeOpen(false)} />
       {/* Language modal */}
       <LanguageModal open={languageOpen} onClose={() => setLanguageOpen(false)} />
+      {/* Agents modal */}
+      {agentsGroup !== null && (
+        <AgentsModal
+          open={true}
+          group={agentsGroup}
+          onClose={() => setAgentsGroup(null)}
+          onSelect={(agent) => { setActiveAgent(agent as any); setAgentsGroup(null) }}
+        />
+      )}
     </div>
   )
 }

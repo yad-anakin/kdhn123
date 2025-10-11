@@ -114,9 +114,9 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
   ) as any
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col flex-1 h-full min-h-0 relative">
       {/* Messages */}
-      <div className="messages-scroll relative flex-1 overflow-y-auto space-y-4 px-3 md:px-4 pt-20 md:pt-24 pb-24">
+      <div className="messages-scroll relative flex-1 max-h-full overflow-y-auto overscroll-contain scroll-smooth space-y-4 px-3 md:px-4 pt-20 md:pt-24 pb-24">
         {messages.length === 0 && !loading ? (
           <div className="absolute left-0 right-0 top-16 md:top-20 bottom-24 flex items-center justify-center px-6">
             <div className="text-center max-w-2xl">

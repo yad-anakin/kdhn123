@@ -24,6 +24,7 @@ export default function Sidebar({
   onOpenTheme,
   onOpenLanguage,
   onOpenSidebar,
+  onOpenAgents,
   active,
   onChangeActive,
 }: {
@@ -32,6 +33,7 @@ export default function Sidebar({
   onOpenTheme: () => void
   onOpenLanguage: () => void
   onOpenSidebar?: () => void
+  onOpenAgents?: (group: 'medical' | 'calc' | 'study') => void
   active?: AgentId
   onChangeActive?: (val: AgentId) => void
 }) {
@@ -43,9 +45,6 @@ export default function Sidebar({
     else setInternalActive(val)
   }
 
-  const [openMedical, setOpenMedical] = useState(true)
-  const [openCalc, setOpenCalc] = useState(false)
-  const [openStudy, setOpenStudy] = useState(false)
 
   // Desktop collapsed rail (only icons) when sidebar is closed
   const collapsed = !open
@@ -105,7 +104,7 @@ export default function Sidebar({
       <nav className="p-2 space-y-2">
         {/* Inset separator under header for better alignment */}
         <div className="mb-2 border-t border-gray-200 dark:border-gray-800 mx-1" />
-        {/* Group: Medical Info */}
+        {/* Group: Medical Info (opens modal) */}
         <div>
           <button
             className={clsx(
@@ -113,53 +112,17 @@ export default function Sidebar({
               collapsed ? 'md:justify-center md:gap-0' : ''
             )}
             onClick={() => {
-              if (collapsed) { setActive('agent1'); return }
-              setOpenMedical((v) => !v)
+              if (onOpenAgents) onOpenAgents('medical')
             }}
-            aria-expanded={openMedical}
             title={t('sidebar.group.medical')}
           >
             <FontAwesomeIcon icon={faNotesMedical} className={clsx('text-sm', collapsed && 'md:text-lg')} />
             <span className={clsx(collapsed ? 'hidden md:hidden' : '')}>{t('sidebar.group.medical')}</span>
-            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto transition-transform text-xs', openMedical ? 'rotate-90' : '', collapsed ? 'hidden md:hidden' : '')} />
+            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto text-xs', collapsed ? 'hidden md:hidden' : '')} />
           </button>
-          {openMedical && !collapsed && (
-            <div className="mt-1 space-y-1 pl-6">
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'agent1'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'agent1'}
-                onClick={() => setActive('agent1')}
-                title={t('sidebar.agent.detailed')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.detailed')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'agent1' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'agent2'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'agent2'}
-                onClick={() => setActive('agent2')}
-                title={t('sidebar.agent.fast')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.fast')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'agent2' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Group: Calculation */}
+        {/* Group: Calculation (opens modal) */}
         <div>
           <button
             className={clsx(
@@ -167,68 +130,17 @@ export default function Sidebar({
               collapsed ? 'md:justify-center md:gap-0' : ''
             )}
             onClick={() => {
-              if (collapsed) { setActive('drug'); return }
-              setOpenCalc((v) => !v)
+              if (onOpenAgents) onOpenAgents('calc')
             }}
-            aria-expanded={openCalc}
             title={t('sidebar.group.calc')}
           >
             <FontAwesomeIcon icon={faCalculator} className={clsx('text-sm', collapsed && 'md:text-lg')} />
             <span className={clsx(collapsed ? 'hidden md:hidden' : '')}>{t('sidebar.group.calc')}</span>
-            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto transition-transform text-xs', openCalc ? 'rotate-90' : '', collapsed ? 'hidden md:hidden' : '')} />
+            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto text-xs', collapsed ? 'hidden md:hidden' : '')} />
           </button>
-          {openCalc && !collapsed && (
-            <div className="mt-1 space-y-1 pl-6">
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'drug'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'drug'}
-                onClick={() => setActive('drug')}
-                title={t('sidebar.agent.drug')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.drug')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'drug' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'pediatric'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'pediatric'}
-                onClick={() => setActive('pediatric')}
-                title={t('sidebar.agent.pediatric')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.pediatric')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'pediatric' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'neonatal'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'neonatal'}
-                onClick={() => setActive('neonatal')}
-                title={t('sidebar.agent.neonatal')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.neonatal')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'neonatal' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Group: Study */}
+        {/* Group: Study (opens modal) */}
         <div>
           <button
             className={clsx(
@@ -236,35 +148,14 @@ export default function Sidebar({
               collapsed ? 'md:justify-center md:gap-0' : ''
             )}
             onClick={() => {
-              if (collapsed) { setActive('study'); return }
-              setOpenStudy((v) => !v)
+              if (onOpenAgents) onOpenAgents('study')
             }}
-            aria-expanded={openStudy}
             title={t('sidebar.group.study')}
           >
             <FontAwesomeIcon icon={faBookOpen} className={clsx('text-sm', collapsed && 'md:text-lg')} />
             <span className={clsx(collapsed ? 'hidden md:hidden' : '')}>{t('sidebar.group.study')}</span>
-            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto transition-transform text-xs', openStudy ? 'rotate-90' : '', collapsed ? 'hidden md:hidden' : '')} />
+            <FontAwesomeIcon icon={faChevronRight} className={clsx('ml-auto text-xs', collapsed ? 'hidden md:hidden' : '')} />
           </button>
-          {openStudy && !collapsed && (
-            <div className="mt-1 space-y-1 pl-6">
-              <button
-                className={clsx(
-                  'w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition inline-flex items-center gap-2 border',
-                  current === 'study'
-                    ? 'bg-gray-100 dark:bg-gray-900 border-[hsl(var(--accent)/0.4)] text-[hsl(var(--accent))]'
-                    : 'border-transparent'
-                )}
-                aria-selected={current === 'study'}
-                onClick={() => setActive('study')}
-                title={t('sidebar.agent.study')}
-              >
-                <FontAwesomeIcon icon={faCaretRight} className="text-xs opacity-70" />
-                <span>{t('sidebar.agent.study')}</span>
-                <FontAwesomeIcon icon={faCheck} className={clsx('ml-auto text-[hsl(var(--accent))]', current === 'study' ? 'opacity-100' : 'opacity-0')} />
-              </button>
-            </div>
-          )}
         </div>
 
         <button

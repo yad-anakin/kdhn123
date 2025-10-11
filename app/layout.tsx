@@ -18,7 +18,7 @@ export default function RootLayout({
       <head>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
         />
         {/* Font Awesome (CDN) for sidebar icons */}
         <link
@@ -47,6 +47,44 @@ export default function RootLayout({
   root.style.setProperty('--accent-foreground', accentFg);
   // Initialize language before hydration (no layout direction changes)
   root.setAttribute('lang', lang);
+} catch (_) {} })();`,
+          }}
+        />
+        {/* Prevent zoom interactions (desktop and mobile) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(() => { try {
+  // Block Ctrl/⌘ + mousewheel pinch zoom
+  window.addEventListener('wheel', (e) => { if (e.ctrlKey) { e.preventDefault(); } }, { passive: false });
+  // Block keyboard zoom shortcuts
+  window.addEventListener('keydown', (e) => {
+    const key = e.key;
+    if ((e.ctrlKey || e.metaKey) && (key === '+' || key === '-' || key === '=' || key === '0')) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+  // iOS Safari pinch-zoom gestures
+  window.addEventListener('gesturestart', (e) => e.preventDefault());
+  window.addEventListener('gesturechange', (e) => e.preventDefault());
+  window.addEventListener('gestureend', (e) => e.preventDefault());
+  // Block pinch by preventing multi-touch moves
+  let multiTouch = false;
+  window.addEventListener('touchstart', (e) => {
+    multiTouch = e.touches && e.touches.length > 1;
+    if (multiTouch) e.preventDefault();
+  }, { passive: false, capture: true });
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false, capture: true });
+  // Prevent double-tap to zoom
+  let lastTouch = 0;
+  window.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouch < 350) { e.preventDefault(); }
+    lastTouch = now;
+  }, { passive: false });
 } catch (_) {} })();`,
           }}
         />
