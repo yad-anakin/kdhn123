@@ -44,7 +44,7 @@ export default function Page() {
   }, [brandOpen])
 
   return (
-    <div className="h-screen w-full flex">
+    <div className="w-full flex min-h-[100dvh]">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

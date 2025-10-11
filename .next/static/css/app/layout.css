@@ -1915,6 +1915,9 @@ video {
 .pointer-events-auto {
   pointer-events: auto;
 }
+.visible {
+  visibility: visible;
+}
 .fixed {
   position: fixed;
 }
@@ -2095,6 +2098,9 @@ video {
 }
 .min-h-\[48px\] {
   min-height: 48px;
+}
+.min-h-\[100dvh\] {
+  min-height: 100dvh;
 }
 .w-12 {
   width: 3rem;
@@ -3085,6 +3091,10 @@ textarea.composer-textarea::-webkit-scrollbar-corner {
 
   .md\:top-20 {
     top: 5rem;
+  }
+
+  .md\:top-14 {
+    top: 3.5rem;
   }
 
   .md\:z-auto {
