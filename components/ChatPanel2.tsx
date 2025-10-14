@@ -45,7 +45,7 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
     }
     const id = setInterval(() => {
       setLoadStep((s) => (s + 1) % 4)
-    }, 900)
+    }, 6000)
     return () => clearInterval(id)
   }, [loading])
 
