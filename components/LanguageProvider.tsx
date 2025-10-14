@@ -185,6 +185,27 @@ const translations: I18nDict = {
     ar: 'جار التحميل',
     ckb: 'بار دەکرێت',
   },
+  // Loading steps (shown next to spinner)
+  'loading.step.1': {
+    en: 'Receiving your question',
+    ar: 'جارٍ استلام سؤالك',
+    ckb: 'پرسیارەکەت وەرگیرا',
+  },
+  'loading.step.2': {
+    en: 'Analyzing context',
+    ar: 'جارٍ تحليل السياق',
+    ckb: 'تێگەیشتن لە ناوەڕۆک',
+  },
+  'loading.step.3': {
+    en: 'Preparing your answer',
+    ar: 'جارٍ تجهيز الإجابة',
+    ckb: 'ئامادەکردنی وەڵام',
+  },
+  'loading.step.4': {
+    en: 'Finalizing',
+    ar: 'جارٍ الإنهاء',
+    ckb: 'تەواوکردن',
+  },
   'error.reply': {
     en: 'Sorry, I had trouble responding. Please try again.',
     ar: 'عذراً، حدثت مشكلة في الرد. حاول مرة أخرى.',

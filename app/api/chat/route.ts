@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { GoogleGenAI, MediaResolution } from '@google/genai'
 import { agent1Prompt } from '@/prompts/agent1'
 import { agent2Prompt } from '@/prompts/agent2'
 import { drugCalculatorPrompt } from '@/prompts/drugCalculator'
@@ -31,15 +32,22 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.GEMINI_API_KEY
 
-    if (!apiKey) {
-      // Mock response if no key is provided
-      const reply = `Mock reply (Gemini): You asked — "${lastUser.slice(0, 400)}"\n\n` +
-        'I can provide general information. For medical concerns, consult a qualified professional.'
-      return NextResponse.json({ reply })
-    }
-
     const agent = body.agent || 'agent1'
-    const systemInstruction = (body.customPrompt && body.customPrompt.trim()) || AGENT_PROMPTS[agent]
+    const baseInstruction = (body.customPrompt && body.customPrompt.trim()) || AGENT_PROMPTS[agent]
+    const isCalcAgent = agent === 'drug' || agent === 'pediatric' || agent === 'neonatal'
+    const isSafeguardExempt = isCalcAgent || agent === 'study'
+    const languagePolicy = isCalcAgent
+      ? 'Language: Respond in Kurdish (Central Kurdish - Sorani). Use clear, concise medical language consistent with the calculator prompts.'
+      : 'Language: Respond in the SAME language as the user\'s last message. Do NOT translate or switch languages unless explicitly requested. If the user writes in a right-to-left script, respond in that script.'
+
+    const proceduralParagraph = '\n\nFor medical/clinical or procedural guidance: (1) include a concise verification checklist of key points you validated, (2) include at least two credible citations (guidelines, textbooks, primary sources) when available, (3) if confidence is low or sources conflict, ask for clarification.'
+    const systemInstruction =
+      baseInstruction +
+      '\n\nMost important: strictly fact-check every statement. Verify names, data, dates, drug dosages, calculations, procedural steps, contraindications, and any quantitative claims against reliable sources. If uncertain, ask for clarification or state uncertainty clearly. Prefer citing credible sources or links when making factual claims. Never fabricate facts.' +
+      (!isSafeguardExempt ? proceduralParagraph : '') +
+      `\n\n${languagePolicy}` +
+      '\n\nTruthfulness policy (applies to all agents): Always tell the truth and correct false assumptions. Never invent, omit, or obscure facts. If you do not know, clearly say you do not know. If content involves risks, still present accurate facts and include concise safety warnings where relevant.' +
+      '\n\nFormat: Respond as plain text for the user-facing answer. Do NOT include your internal reasoning. Output text only.'
 
     // Map messages to Gemini format
     const contents = (body.messages || []).map((m) => ({
@@ -47,29 +55,64 @@ export async function POST(req: NextRequest) {
       parts: [{ text: m.content }],
     }))
 
-    const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey),
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { role: 'system', parts: [{ text: systemInstruction }] },
-          contents,
-          generationConfig: { temperature: 0.3 },
-        }),
-      }
-    )
+    // Streaming response via SSE using Google GenAI generateContentStream (default)
+    const encoder = new TextEncoder()
 
-    if (!res.ok) {
-      const text = await res.text()
-      console.error('Gemini error', res.status, text)
-      return NextResponse.json({ reply: 'Sorry, there was an error contacting the AI service.' }, { status: 200 })
-    }
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const write = (event: string, data: any) => {
+          const payload = `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
+          controller.enqueue(encoder.encode(payload))
+        }
+        try {
+          if (!apiKey) {
+            // Stream a mock message if no key is provided
+            write('delta', { text: `Mock reply (Gemini): You asked — "${lastUser.slice(0, 400)}"` })
+            write('delta', { text: '\n\nI can provide general information. For medical concerns, consult a qualified professional.' })
+            write('citations', { urls: [] })
+            write('done', {})
+            controller.close()
+            return
+          }
 
-    const data = (await res.json()) as any
-    const reply: string = data.candidates?.[0]?.content?.parts?.map((p: any) => p.text || '').join('').trim() ||
-      'Sorry, I could not generate a response.'
-    return NextResponse.json({ reply })
+          const ai = new GoogleGenAI({ apiKey })
+          const model = 'gemini-2.5-flash'
+          const response = await ai.models.generateContentStream({
+            model,
+            config: {
+              thinkingConfig: {
+                thinkingBudget: -1,
+              },
+              mediaResolution: MediaResolution.MEDIA_RESOLUTION_UNSPECIFIED,
+              temperature: 1,
+              // Let the model emit text freely for streaming; parse/format in client if needed
+              responseMimeType: 'text/plain',
+              systemInstruction: systemInstruction,
+            },
+            contents,
+          })
+
+          for await (const chunk of response as any) {
+            const text = chunk?.text || ''
+            if (text) write('delta', { text })
+          }
+          write('done', {})
+          controller.close()
+        } catch (e) {
+          write('error', { message: 'stream_error' })
+          try { controller.close() } catch {}
+        }
+      },
+    })
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        'Transfer-Encoding': 'chunked',
+      },
+    })
   } catch (e) {
     console.error('API error', e)
     return NextResponse.json({ reply: 'Sorry, something went wrong. Please try again.' }, { status: 200 })

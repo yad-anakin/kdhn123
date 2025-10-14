@@ -30,11 +30,24 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadStep, setLoadStep] = useState(0)
   const endRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
+
+  // Cycle loading steps while loading
+  useEffect(() => {
+    if (!loading) {
+      setLoadStep(0)
+      return
+    }
+    const id = setInterval(() => {
+      setLoadStep((s) => (s + 1) % 4)
+    }, 6000)
+    return () => clearInterval(id)
+  }, [loading])
 
   // Load last 10 messages for the current agent from localStorage
   useEffect(() => {
@@ -83,9 +96,52 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: next.slice(-12), agent }),
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = (await res.json()) as { reply: string }
-      setMessages((m) => [...m, { role: 'assistant', content: data.reply }])
+      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`)
+
+      // Start streaming: create an empty assistant message we will append to
+      setMessages((m) => [...m, { role: 'assistant', content: '' }])
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder('utf-8')
+      let buffer = ''
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        let idx: number
+        while ((idx = buffer.indexOf('\n\n')) !== -1) {
+          const frame = buffer.slice(0, idx)
+          buffer = buffer.slice(idx + 2)
+          const lines = frame.split('\n')
+          const eventLine = lines.find((l) => l.startsWith('event: ')) || ''
+          const dataLine = lines.find((l) => l.startsWith('data: ')) || ''
+          const event = eventLine.slice(7).trim()
+          const dataStr = dataLine.slice(6)
+          if (!event || !dataStr) continue
+          try {
+            const payload = JSON.parse(dataStr)
+            if (event === 'delta') {
+              const delta = typeof payload?.text === 'string' ? payload.text : ''
+              if (delta) {
+                setMessages((m) => {
+                  const copy = m.slice()
+                  const last = copy[copy.length - 1]
+                  if (last && last.role === 'assistant') {
+                    copy[copy.length - 1] = { role: 'assistant', content: (last.content || '') + delta }
+                  }
+                  return copy
+                })
+              }
+            } else if (event === 'done') {
+              // End of stream
+              break
+            } else if (event === 'error') {
+              throw new Error('stream_error')
+            }
+          } catch {}
+        }
+      }
     } catch (err) {
       setMessages((m) => [
         ...m,
@@ -204,7 +260,7 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
         }))}
         {loading && (
           <div className="text-left">
-            <div className="inline-flex items-center justify-center rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800">
+            <div className="inline-flex items-center gap-3 rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800">
               <Image
                 src="/kdhn.png"
                 alt={t('img.loading')}
@@ -213,6 +269,23 @@ export default function ChatPanel2({ agent, clearSignal }: { agent: 'agent1' | '
                 className="h-6 w-6 animate-spin select-none invert dark:invert-0"
                 priority
               />
+              <div
+                className="text-sm text-gray-700 dark:text-gray-200"
+                // Arabic and Sorani Kurdish are RTL
+                dir={(() => {
+                  try {
+                    const lang = (document.documentElement.getAttribute('lang') || 'en').toLowerCase()
+                    return lang === 'ar' || lang === 'ckb' ? 'rtl' : 'ltr'
+                  } catch { return 'ltr' }
+                })()}
+              >
+                {[
+                  t('loading.step.1'),
+                  t('loading.step.2'),
+                  t('loading.step.3'),
+                  t('loading.step.4'),
+                ][loadStep]}
+              </div>
             </div>
           </div>
         )}
